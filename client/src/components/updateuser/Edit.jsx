@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import "../adduser/add.css";
+import toast from 'react-hot-toast';
 
 const Edit = () => {
 
@@ -12,6 +13,7 @@ const Edit = () => {
     }
 
     const {id} = useParams();
+    const navigate = useNavigate();
     const [user, setUser] = useState();
 
     const inputChangeHandler = (e) =>{
@@ -30,7 +32,15 @@ const Edit = () => {
         })
     },[id])
 
-
+    const submitForm = async(e) => {
+        e.preventDefault();
+        await axios.put(`http://localhost:8000/api/update/${id}`, user)
+        .then((response) => {
+            toast.success(response.data.msg, {position:"top-right"})
+            navigate("/")
+          })
+          .catch(error => console.log(error))
+      };
 
     return(
         <div className='addUser'>
